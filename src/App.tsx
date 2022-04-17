@@ -1,4 +1,10 @@
-import { Component, createSignal, For, JSX } from 'solid-js';
+import {
+   Component,
+   createEffect,
+   createSignal,
+   For,
+   JSX
+} from 'solid-js';
 
 type Sign = 'X' | 'O';
 
@@ -12,6 +18,9 @@ const GRID_STYLE = {
    'width': '300px',
    'height': '300px'
 };
+const CELL_STYLE = {
+   'cursor': 'pointer'
+};
 
 interface ICell {
    value: Sign | undefined;
@@ -20,7 +29,7 @@ interface ICell {
 
 const Cell: Component<ICell> = ({ value, onClick }) => {
    return (
-      <button onClick={onClick}>
+      <button onClick={onClick} style={CELL_STYLE}>
          {value}
       </button>
    )
@@ -37,8 +46,13 @@ const Grid: Component = ({ children }) => {
 const getSign = (curr: boolean): Sign => curr ? 'X' : 'O';
 
 const App: Component = () => {
-   const [orderValue, setOrderValue] = createSignal(false);
    const [gridValue, setGridValue] = createSignal(GRID_STUB);
+   const [orderValue, setOrderValue] = createSignal(false);
+   const [isFullGrid, setIsFullGrid] = createSignal(false);
+
+   createEffect(() => {
+      setIsFullGrid(gridValue().every(row => row.every(Boolean)));
+   });
 
    const attachCellClick = (value: Sign, i: number, j: number) => {
       if (value) {
@@ -58,8 +72,19 @@ const App: Component = () => {
       }
    }
 
+   const handleResetGame = () => {
+      setGridValue(GRID_STUB);
+   }
+
    return (
       <div>
+         {
+            (!isFullGrid()) ? (
+               <h2>Order now: {getSign(orderValue())}</h2>
+            ) : (
+               <button onClick={handleResetGame}>Reset</button>
+            )
+         }
          <Grid>
             {
                <For each={gridValue()}>

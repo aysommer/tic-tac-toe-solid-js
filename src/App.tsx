@@ -51,7 +51,7 @@ const App: Component = () => {
       return () => setCellValue(value, i, j);
    }
 
-   const attachCellHover = ()
+   // const attachCellHover = ()
 
    const setCellValue = (value: Sign, i: number, j: number) => {
       setGridValue((old) => {

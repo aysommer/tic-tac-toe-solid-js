@@ -5,22 +5,11 @@ import {
    For,
    JSX
 } from 'solid-js';
+import './App.css';
 
 type Sign = 'X' | 'O';
 
 const GRID_STUB = Array(3).fill(Array(3).fill(undefined));
-const GRID_STYLE = {
-   'display': 'grid',
-   'grid-template-columns': 'repeat(3, 1fr)',
-   'grid-template-rows': 'repeat(3, 1fr)',
-   'grid-column-gap': 3,
-   'grid-row-gap': 3,
-   'width': '300px',
-   'height': '300px'
-};
-const CELL_STYLE = {
-   'cursor': 'pointer'
-};
 
 interface ICell {
    value: Sign | undefined;
@@ -29,7 +18,7 @@ interface ICell {
 
 const Cell: Component<ICell> = ({ value, onClick }) => {
    return (
-      <button onClick={onClick} style={CELL_STYLE}>
+      <button onClick={onClick} class='grid__cell'>
          {value}
       </button>
    )
@@ -37,7 +26,7 @@ const Cell: Component<ICell> = ({ value, onClick }) => {
 
 const Grid: Component = ({ children }) => {
    return (
-      <section style={GRID_STYLE}>
+      <section class='grid'>
          {children}
       </section>
    )
@@ -59,17 +48,21 @@ const App: Component = () => {
          return;
       }
 
-      return () => {
-         setGridValue((old) => {
-            const res = [...old].map((row, _i) => row.map((value: Sign, _j: number) => (
-               (i === _i && j === _j) ? getSign(orderValue()) : value
-            )));
+      return () => setCellValue(value, i, j);
+   }
 
-            setOrderValue(!orderValue())
+   const attachCellHover = ()
 
-            return res;
-         })
-      }
+   const setCellValue = (value: Sign, i: number, j: number) => {
+      setGridValue((old) => {
+         const res = [...old].map((row, _i) => row.map((value: Sign, _j: number) => (
+            (i === _i && j === _j) ? getSign(orderValue()) : value
+         )));
+
+         setOrderValue(!orderValue());
+
+         return res;
+      })
    }
 
    const handleResetGame = () => {
@@ -77,7 +70,7 @@ const App: Component = () => {
    }
 
    return (
-      <div>
+      <div class='layout'>
          {
             (!isFullGrid()) ? (
                <h2>Order now: {getSign(orderValue())}</h2>

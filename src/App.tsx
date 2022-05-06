@@ -1,4 +1,5 @@
 import {
+   Accessor,
    Component,
    createEffect,
    createSignal,
@@ -11,15 +12,42 @@ type Sign = 'X' | 'O';
 
 const GRID_STUB = Array(3).fill(Array(3).fill(undefined));
 
+const HOVER_STYLE: JSX.CSSProperties = {
+   color: 'gray'
+};
+
 interface ICell {
-   value: Sign | undefined;
-   onClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent>;
+   value: Sign;
+   orderValue: Sign;
+   onClick: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent> | undefined;
 }
 
-const Cell: Component<ICell> = ({ value, onClick }) => {
+const getSign = (val: boolean): Sign => val ? 'X' : 'O';
+
+const Cell: Component<ICell> = ({ value, orderValue, onClick }) => {
+   const [shownValue, setShownValue] = createSignal<Sign>(value);
+   const [isShown, setIsShown] = createSignal<boolean>(false);
+   const [hoverStyle, setHoverStyle] = createSignal<JSX.CSSProperties>();
+
+   const attachHover = (val: boolean) => {
+      return () => setIsShown(val);
+   }
+
+   createEffect(() => {
+      setHoverStyle((!value && isShown()) ? HOVER_STYLE : undefined);
+      setShownValue((!value && isShown()) ? orderValue : value);
+   });
+
    return (
-      <button onClick={onClick} class='grid__cell'>
-         {value}
+      <button
+         onClick={onClick}
+         onMouseEnter={attachHover(true)}
+         onMouseLeave={attachHover(false)}
+         style={hoverStyle()}
+         class='grid__cell'>
+         {
+            shownValue()
+         }
       </button>
    )
 }
@@ -32,23 +60,21 @@ const Grid: Component = ({ children }) => {
    )
 }
 
-const getSign = (curr: boolean): Sign => curr ? 'X' : 'O';
-
 const App: Component = () => {
-   const [gridValue, setGridValue] = createSignal(GRID_STUB);
-   const [orderValue, setOrderValue] = createSignal(false);
-   const [isFullGrid, setIsFullGrid] = createSignal(false);
+   const [gridValue, setGridValue] = createSignal<typeof GRID_STUB>(GRID_STUB);
+   const [orderValue, setOrderValue] = createSignal<boolean>(false);
+   const [isFullGrid, setIsFullGrid] = createSignal<boolean>(false);
 
    createEffect(() => {
       setIsFullGrid(gridValue().every(row => row.every(Boolean)));
    });
 
    const attachCellClick = (value: Sign, i: number, j: number) => {
-      if (value) {
-         return;
-      }
-
-      return () => setCellValue(value, i, j);
+      return () => {
+         if (!value) {
+            setCellValue(value, i, j)
+         }
+      };
    }
 
    // const attachCellHover = ()
@@ -84,7 +110,13 @@ const App: Component = () => {
                   {(row, i) => (
                      <For each={row}>
                         {(value: Sign, j) => {
-                           return <Cell value={value} onClick={attachCellClick(value, i(), j())} />
+                           return (
+                              <Cell
+                                 value={value}
+                                 orderValue={getSign(orderValue())}
+                                 onClick={attachCellClick(value, i(), j())}
+                              />
+                           )
                         }}
                      </For>
                   )}

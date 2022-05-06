@@ -20,7 +20,6 @@
 button {
    background-color: white;
    outline: none;
-   transition: .15s ease-in-out all;
    border: 0;
    cursor: pointer;
    border-radius: var(--border-radius_s);
@@ -38,10 +37,6 @@ button:active {
 .grid__cell {
    border-radius: var(--border-radius_m);
    font-weight: 700;
-}
-
-.grid__cell::before {
-
 }
 
 .layout {

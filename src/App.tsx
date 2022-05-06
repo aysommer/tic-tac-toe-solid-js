@@ -1,4 +1,4 @@
-import type { GameField, Sign } from './types';
+import type { GameField, Sign, Winner } from './types';
 import {
    Component,
    createEffect,
@@ -7,17 +7,17 @@ import {
 } from 'solid-js';
 import Cell from './Cell';
 import Grid from './Grid';
-import ResetPanel from './ResetPanel';
+import ResultPanel from './ResetPanel';
 import { getRandBoolean, getSign, isFullGrid } from './utils';
+import { GRID_STUB } from './constants';
 
 import './App.css';
-
-const GRID_STUB: GameField = Array(3).fill(Array(3).fill(undefined));
 
 const App: Component = () => {
    const [gridValue, setGridValue] = createSignal<GameField>(GRID_STUB);
    const [orderValue, setOrderValue] = createSignal<boolean>(getRandBoolean());
    const [isFull, setIsFull] = createSignal<boolean>(false);
+   const [winner, setWinner] = createSignal<Winner>(undefined);
 
    createEffect(() => {
       setIsFull(isFullGrid(gridValue()));
@@ -50,7 +50,7 @@ const App: Component = () => {
    return (
       <main class='layout'>
          <main class='game-panel'>
-            <ResetPanel
+            <ResultPanel
                isFull={isFull}
                orderValue={orderValue}
                handleResetGame={handleResetGame}

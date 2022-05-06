@@ -1,8 +1,10 @@
 :root {
+   --offset_xs: 4px;
    --offset_s: 8px;
    --offset_m: 16px;
    --font-size_m: 32px;
    --font-size_s: 24px;
+   --border-radius_l: 24px;
    --border-radius_m: 16px;
    --border-radius_s: 8px;
    --default-shadow: 0 1px 6px 0 rgba(32, 33, 36, .28);
@@ -39,7 +41,7 @@ button:active {
 }
 
 .grid__cell {
-   border-radius: var(--border-radius_m);
+   border-radius: var(--border-radius_s);
    font-weight: 700;
 }
 
@@ -63,9 +65,13 @@ button:active {
    align-items: center;
    height: 50px;
    margin-bottom: var(--offset_m);
-   padding: var(--offset_s);
+   padding: var(--offset_xs) var(--offset_s);
    font-size: var(--font-size_s);
    box-shadow: var(--default-shadow);
    border-radius: var(--border-radius_m);
    font-weight: bold;
+}
+
+.reset-button {
+   width: 100%;
 }

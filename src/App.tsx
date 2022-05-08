@@ -23,11 +23,9 @@ const App: Component = () => {
       setIsFull(isFullGrid(gridValue()));
    });
 
-   const attachCellClick = (value: Sign, i: number, j: number) => {
+   const attachCellClick = (i: number, j: number) => {
       return () => {
-         if (!value) {
-            setCellValue(i, j)
-         }
+         setCellValue(i, j);
       };
    }
 
@@ -65,7 +63,7 @@ const App: Component = () => {
                                  <Cell
                                     value={value}
                                     orderValue={getSign(orderValue())}
-                                    onClick={attachCellClick(value, i(), j())}
+                                    onClick={attachCellClick(i(), j())}
                                  />
                               )
                            }}

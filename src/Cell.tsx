@@ -32,6 +32,7 @@ const Cell: Component<ICell> = ({ value, orderValue, onClick }) => {
 
    return (
       <button
+         disabled={!!value}
          onClick={onClick}
          onMouseEnter={attachHover(true)}
          onMouseLeave={attachHover(false)}
